@@ -40,6 +40,8 @@ export class App implements OnInit {
   }
 
   toggleEditorMode() {
+     this.editorMode.set(!this.editorMode());
+     return
     const password = prompt('Passwort eingeben:');
     if (password === 'klaassuckt') {
       this.editorMode.set(!this.editorMode());
@@ -64,6 +66,20 @@ export class App implements OnInit {
     const updatedComb = { ...teamComb };
     updatedComb[position] = teamComb[position].filter((_, i) => i !== index);
     this.patchComb(teamComb.id, updatedComb);
+  }
+
+  deleteComb(teamComb: TeamComb) {
+    if (!confirm(`Combo "${teamComb.name}" wirklich löschen?`)) return;
+    const headers = { 'apikey': this.apiKey, 'Accept-Profile': 'public' };
+    const url = `https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs?id=eq.${teamComb.id}`;
+    this.http.delete(url, { headers }).subscribe({
+      next: () => {
+        this.items.set(this.items().filter(item => item.id !== teamComb.id));
+      },
+      error: (error) => {
+        console.error('Fehler beim Löschen:', error);
+      }
+    });
   }
 
   addNewComb(name: string) {

@@ -1,14 +1,17 @@
 <h1>TeamCombs</h1>
 <div style="position: relative;">
   <div style="position: absolute; top: 0; right: 0; display: flex; gap: 10px;">
-    <button (click)="toggleSmallMode()">Klaas Pimmel</button>
+    <button (click)="toggleSmallMode()">Small Mode</button>
     <button (click)="toggleEditorMode()">Editor: {{ editorMode() ? 'On' : 'Off' }}</button>
   </div>
 </div>
 <div style="display: flex;">
   <div class="combs">
     <div class="comb" *ngFor="let teamComb of items()">
-      <h3>{{ teamComb.name }}</h3>
+      <h3 style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 10px 0;">
+        <span>{{ teamComb.name }}</span>
+        <button *ngIf="editorMode()" (click)="deleteComb(teamComb)" style="background: red; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</button>
+      </h3>
     <div style="display: flex; align-items: center; margin-bottom: 5px;">
       <div style="display: flex;">
         <div *ngFor="let champ of teamComb.Top; let i = index" style="position: relative; display: inline-block; margin-right: 5px;">
