@@ -1,10 +1,26 @@
 <h1>TeamCombs</h1>
 <div class="combs">
   <div class="comb" *ngFor="let teamComb of items()">
-    <p><strong>Top:</strong> {{ teamComb.Top }}</p>
-    <p><strong>Jungle:</strong> {{ teamComb.Jungle }}</p>
-    <p><strong>Mid:</strong> {{ teamComb.Mid }}</p>
-    <p><strong>ADC:</strong> {{ teamComb.ADC }}</p>
-    <p><strong>Support:</strong> {{ teamComb.Support }}</p>
+    <h3>{{ teamComb.name }}</h3>
+    <p><strong>Top:</strong>
+      <img [src]="'assets/' + teamComb.Top.champ1 + '.png'" [alt]="teamComb.Top.champ1" width="200" height="100">
+      <img [src]="'assets/' + teamComb.Top.champ2 + '.png'" [alt]="teamComb.Top.champ2" width="200" height="100">
+    </p>
+    <p><strong>Jungle:</strong>
+      <img [src]="'assets/' + teamComb.Jgl.champ1 + '.png'" [alt]="teamComb.Jgl.champ1" width="200" height="200">
+      <img [src]="'assets/' + teamComb.Jgl.champ2 + '.png'" [alt]="teamComb.Jgl.champ2" width="200" height="200">
+    </p>
+    <p><strong>Mid:</strong>
+      <img [src]="'assets/' + teamComb.Mid.champ1 + '.png'" [alt]="teamComb.Mid.champ1" width="200" height="200">
+      <img [src]="'assets/' + teamComb.Mid.champ2 + '.png'" [alt]="teamComb.Mid.champ2" width="200" height="200">
+    </p>
+    <p><strong>ADC:</strong>
+      <img [src]="'assets/' + teamComb.Bot.champ1 + '.png'" [alt]="teamComb.Bot.champ1" width="200" height="200">
+      <img [src]="'assets/' + teamComb.Bot.champ2 + '.png'" [alt]="teamComb.Bot.champ2" width="200" height="200">
+    </p>
+    <p><strong>Support:</strong>
+      <img [src]="'assets/' + teamComb.Supp.champ1 + '.png'" [alt]="teamComb.Supp.champ1" width="200" height="200">
+      <img [src]="'assets/' + teamComb.Supp.champ2 + '.png'" [alt]="teamComb.Supp.champ2" width="200" height="200">
+    </p>
   </div>
 </div>
