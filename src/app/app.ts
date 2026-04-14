@@ -6,11 +6,11 @@ import { HttpClient } from '@angular/common/http';
 interface TeamComb {
   id: number;
   name: string;
-  Top: { champ1: string; champ2: string; };
-  Jgl: { champ1: string; champ2: string; };
-  Mid: { champ1: string; champ2: string; };
-  Bot: { champ1: string; champ2: string; };
-  Supp: { champ1: string; champ2: string; };
+  Top: string[];
+  Jgl: string[];
+  Mid: string[];
+  Bot: string[];
+  Supp: string[];
 }
 
 @Component({
@@ -35,7 +35,16 @@ export class App implements OnInit {
     this.http.get('https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs', { headers }).subscribe({
       next: (data: any) => {
         console.log('Daten erhalten:', data);
-        setTimeout(() => this.items.set(data as TeamComb[]), 0); // Verzögerte Zuweisung, um Change Detection-Fehler zu vermeiden
+        // Konvertiere die Objekte (c1, c2, etc.) zu Arrays
+        const convertedData = data.map((item: any) => ({
+          ...item,
+          Top: Object.values(item.Top || {}).filter(v => v),
+          Jgl: Object.values(item.Jgl || {}).filter(v => v),
+          Mid: Object.values(item.Mid || {}).filter(v => v),
+          Bot: Object.values(item.Bot || {}).filter(v => v),
+          Supp: Object.values(item.Supp || {}).filter(v => v)
+        }));
+        setTimeout(() => this.items.set(convertedData as TeamComb[]), 0); // Verzögerte Zuweisung, um Change Detection-Fehler zu vermeiden
       },
       error: (error) => {
         console.error('Fehler:', error);
