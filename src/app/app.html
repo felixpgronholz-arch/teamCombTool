@@ -2,20 +2,30 @@
 <div class="combs">
   <div class="comb" *ngFor="let teamComb of items()">
     <h3>{{ teamComb.name }}</h3>
-    <p><strong>Top:</strong>
-      <img *ngFor="let champ of teamComb.Top" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
-    </p>
-    <p><strong>Jungle:</strong>
-      <img *ngFor="let champ of teamComb.Jgl" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
-    </p>
-    <p><strong>Mid:</strong>
-      <img *ngFor="let champ of teamComb.Mid" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
-    </p>
-    <p><strong>ADC:</strong>
-      <img *ngFor="let champ of teamComb.Bot" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
-    </p>
-    <p><strong>Support:</strong>
-      <img *ngFor="let champ of teamComb.Supp" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
-    </p>
+    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+      <div style="display: flex;">
+        <img *ngFor="let champ of teamComb.Top" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+      <div style="display: flex;">
+        <img *ngFor="let champ of teamComb.Jgl" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+      <div style="display: flex;">
+        <img *ngFor="let champ of teamComb.Mid" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+      <div style="display: flex;">
+        <img *ngFor="let champ of teamComb.Bot" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
+      </div>
+    </div>
+    <div style="display: flex; align-items: center;">
+      <div style="display: flex;">
+        <img *ngFor="let champ of teamComb.Supp" [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" width="100" height="100">
+      </div>
+    </div>
   </div>
 </div>
