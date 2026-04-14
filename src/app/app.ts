@@ -13,6 +13,8 @@ interface TeamComb {
   Supp: string[];
 }
 
+type Position = 'Top' | 'Jgl' | 'Mid' | 'Bot' | 'Supp';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, CommonModule],
@@ -24,9 +26,89 @@ export class App implements OnInit {
   private apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzd3J2bmJ1bm5idWlzeHRtcHRzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjAxMTk2OCwiZXhwIjoyMDkxNTg3OTY4fQ.vbJg-_ZGjW_1OIbHVtRmcsIeShPYJv26XxRM73YZboA'; // Ersetze mit deinem echten API-Key
 
   public items = signal<TeamComb[]>([]);
+  public smallMode = signal(false);
+  public editorMode = signal(false);
+  public activeAdd = signal<{comboId: number, position: Position} | null>(null);
+  public showAddComb = signal(false);
 
   ngOnInit() {
     this.fetchData();
+  }
+
+  toggleSmallMode() {
+    this.smallMode.set(!this.smallMode());
+  }
+
+  toggleEditorMode() {
+    const password = prompt('Passwort eingeben:');
+    if (password === 'klaassuckt') {
+      this.editorMode.set(!this.editorMode());
+    } else {
+      alert('Falsches Passwort!');
+    }
+  }
+
+  showAddChamp(comboId: number, position: Position) {
+    this.activeAdd.set({comboId, position});
+  }
+
+  addChamp(teamComb: TeamComb, position: Position, champ: string) {
+    if (!champ.trim()) return;
+    const updatedComb = { ...teamComb };
+    updatedComb[position] = [...teamComb[position], champ];
+    this.patchComb(teamComb.id, updatedComb);
+    this.activeAdd.set(null);
+  }
+
+  removeChamp(teamComb: TeamComb, position: Position, index: number) {
+    const updatedComb = { ...teamComb };
+    updatedComb[position] = teamComb[position].filter((_, i) => i !== index);
+    this.patchComb(teamComb.id, updatedComb);
+  }
+
+  addNewComb(name: string) {
+    if (!name.trim()) return;
+    const newComb = {
+      name: name.trim(),
+      Top: [],
+      Jgl: [],
+      Mid: [],
+      Bot: [],
+      Supp: []
+    };
+    const headers = { 'apikey': this.apiKey, 'Accept-Profile': 'public', 'Content-Type': 'application/json' };
+    const url = `https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs`;
+    this.http.post<TeamComb>(url, newComb, { headers }).subscribe({
+      next: (response) => {
+        // Neue Combo zur Liste hinzufügen
+        this.items.set([...this.items(), response]);
+        this.showAddComb.set(false);
+      },
+      error: (error) => {
+        console.error('Fehler beim Hinzufügen:', error);
+      }
+    });
+  }
+
+  patchComb(id: number, updatedComb: TeamComb) {
+    const headers = { 'apikey': this.apiKey, 'Accept-Profile': 'public', 'Content-Type': 'application/json' };
+    const url = `https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs?id=eq.${id}`;
+    // Entferne id und andere nicht zu patchende Felder
+    const { id: _, ...body } = updatedComb;
+    this.http.patch(url, body, { headers }).subscribe({
+      next: () => {
+        // Aktualisiere die lokale Liste
+        const current = this.items();
+        const index = current.findIndex(c => c.id === id);
+        if (index !== -1) {
+          current[index] = updatedComb;
+          this.items.set([...current]);
+        }
+      },
+      error: (error) => {
+        console.error('Fehler beim Patchen:', error);
+      }
+    });
   }
 
   // Beispiel für eine GET-Anfrage
@@ -43,7 +125,7 @@ export class App implements OnInit {
           Mid: Object.values(item.Mid || {}).filter(v => v),
           Bot: Object.values(item.Bot || {}).filter(v => v),
           Supp: Object.values(item.Supp || {}).filter(v => v)
-        }));
+        })).sort((a: any, b: any) => a.id - b.id);
         setTimeout(() => this.items.set(convertedData as TeamComb[]), 0); // Verzögerte Zuweisung, um Change Detection-Fehler zu vermeiden
       },
       error: (error) => {
