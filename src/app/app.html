@@ -1,9 +1,44 @@
 <h1 class="page-title">TeamCombs</h1>
 <div class="toolbar">
+  <div class="view-toggle">
+    <button class="view-toggle-button" [class.active]="viewMode() === 'combs'" (click)="toggleView('combs')">Team Combs</button>
+    <button class="view-toggle-button" [class.active]="viewMode() === 'pools'" (click)="toggleView('pools')">Champ Pools</button>
+  </div>
   <button class="toolbar-button" (click)="toggleEditorMode()">Editor: {{ editorMode() ? 'On' : 'Off' }}</button>
 </div>
 
-<div class="comb-list">
+<div class="pool-view" *ngIf="viewMode() === 'pools'">
+  <div class="pool-description">
+    <div class="pool-title">Champion Comfort Pool</div>
+    <div class="pool-subtitle">Zeigt die Champion-Pools nach Rolle und Komfort-Level.</div>
+  </div>
+  <div *ngIf="championPools().length === 0" class="empty-message">Keine Champion Pools geladen.</div>
+  <div class="pool-grid" *ngIf="championPools().length > 0">
+    <section class="pool-card" *ngFor="let role of poolRoles">
+      <div class="pool-card-title">{{ role }}</div>
+      <div class="champ-pool-list">
+        <div class="champ-pill" *ngFor="let champ of poolGroups()[role]">
+          <span class="champ-name">{{ champ.champion }}</span>
+          <span class="champ-badge" [ngClass]="{
+            'comfort-full': champ.comfort === 'Blind/Full Comfort',
+            'comfort-good': champ.comfort === 'Guter Comfort',
+            'comfort-ok': champ.comfort === 'Naja/Spielbar',
+            'comfort-bad': champ.comfort === 'Eher nicht'
+          }">{{ champ.comfort }}</span>
+        </div>
+      </div>
+    </section>
+  </div>
+  <aside class="pool-legend">
+    <div class="legend-title">Legende</div>
+    <div class="legend-item"><span class="legend-dot full"></span>Blind/Full Comfort</div>
+    <div class="legend-item"><span class="legend-dot good"></span>Guter Comfort</div>
+    <div class="legend-item"><span class="legend-dot ok"></span>Naja/Spielbar</div>
+    <div class="legend-item"><span class="legend-dot bad"></span>Eher nicht</div>
+  </aside>
+</div>
+
+<div *ngIf="viewMode() === 'combs'" class="comb-list">
   <article class="comb-card" *ngFor="let teamComb of items()">
     <div class="comb-name-panel">
       <div *ngIf="!editorMode()" class="combo-name">{{ teamComb.name }}</div>
@@ -112,7 +147,7 @@
   </article>
 </div>
 
-<div *ngIf="editorMode()" class="add-combo-box">
+<div *ngIf="viewMode() === 'combs' && editorMode()" class="add-combo-box">
   <button class="add-combo-button" (click)="showAddComb.set(true)">+</button>
   <input *ngIf="showAddComb()" class="add-combo-input" type="text" placeholder="Neue Combo Name" (keyup.enter)="addNewComb($event.target.value)">
 </div>

@@ -1,0 +1,73 @@
+INSERT INTO public."teamCombs" ("name","Top","Jgl","Mid","Bot","Supp","Stärken","Schwächen","Ziele","Notes") VALUES
+(
+  'Catch',
+  '["Sion","Renekton","Jax","Volibear"]',
+  '["Vi","Amumu","Amumu","XinZhao"]',
+  '["Ahri","Syndra","Lux","LeBlanc"]',
+  '["Caitlyn","Jhin","Kaisa","Varus"]',
+  '["Alistar","Thresh","Leona","Poppy","Blitzcrank"]',
+  '',
+  '',
+  '',
+  ''
+),
+(
+  'Teamfight',
+  '["Ornn","Sion","Gnar","Karma"]',
+  '["JarvanIV","Viego","Lillia","Zac"]',
+  '["Orianna","Syndra","Heimerdinger","Viktor"]',
+  '["Jinx","Aphelios","Yunara","Twitch"]',
+  '["Alistar","Thresh","Braum","Lulu"]',
+  '',
+  '',
+  '',
+  ''
+),
+(
+  'Split 1-4',
+  '["Yorick","Sion","Tryndamere","Jax"]',
+  '["JarvanIV","Diana","Lillia","Hecarim"]',
+  '["Orianna","Galio","AurelionSol","Viktor"]',
+  '["Jinx","Aphelios","Sivir","Twitch"]',
+  '["Leona","Thresh","Taric","RenataGlasc"]',
+  '',
+  '',
+  '',
+  ''
+),
+(
+  'Split 1-3-1',
+  '["Yorick","Sion","Tryndamere","Jax"]',
+  '["JarvanIV","Diana","Lillia","Hecarim"]',
+  '["Orianna","Galio","AurelionSol","Viktor"]',
+  '["Jinx","Aphelios","Sivir","Twitch"]',
+  '["Leona","Thresh","Taric","RenataGlasc"]',
+  E'Pressure auf allen Lanes\nKlare Finish Struktur\nSafe Solo laner\nSnowball',
+  E'Wenn behind schwer zu executen\nwenig Teamfight\nObjective Fight können komisch werden\nKomisches Mid Game',
+  E'Mid und Top lane auf die Side Lanes schicken um die Türme tot zu pushen\nJngl + Bot lane auf Mid möglichst safe aber mit Möglichkeiten 3v3 zu fighten und 3v2 zu abusen\nOptimal wenn Sidelaner 2 Leute ziehen',
+  ''
+),
+(
+  'Siege',
+  '[]',
+  '[]',
+  '[]',
+  '[]',
+  '[]',
+  '',
+  '',
+  '',
+  ''
+),
+(
+  'Front to Back',
+  '[]',
+  '[]',
+  '[]',
+  '[]',
+  '[]',
+  '',
+  'Heavy Engage',
+  '',
+  ''
+);
