@@ -16,14 +16,6 @@ interface TeamComb {
   notes?: string;
 }
 
-interface ChampionComfort {
-  id: number;
-  role: string;
-  champion: string;
-  comfort: string;
-  note?: string;
-}
-
 type Position = 'Top' | 'Jgl' | 'Mid' | 'Bot' | 'Supp';
 
 @Component({
@@ -37,17 +29,12 @@ export class App implements OnInit {
   private apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzd3J2bmJ1bm5idWlzeHRtcHRzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjAxMTk2OCwiZXhwIjoyMDkxNTg3OTY4fQ.vbJg-_ZGjW_1OIbHVtRmcsIeShPYJv26XxRM73YZboA'; // Ersetze mit deinem echten API-Key
 
   public items = signal<TeamComb[]>([]);
-  public viewMode = signal<'combs' | 'pools'>('combs');
-  public championPools = signal<ChampionComfort[]>([]);
-  public poolGroups = signal<Record<string, ChampionComfort[]>>({ Top: [], Jngl: [], Mid: [], ADC: [], Supp: [] });
-  public poolRoles = ['Top', 'Jngl', 'Mid', 'ADC', 'Supp'] as const;
   public editorMode = signal(false);
   public activeAdd = signal<{comboId: number, position: Position} | null>(null);
   public showAddComb = signal(false);
 
   ngOnInit() {
     this.fetchData();
-    this.fetchChampPools();
   }
 
   toggleEditorMode() {
@@ -61,40 +48,8 @@ export class App implements OnInit {
     }
   }
 
-  toggleView(view: 'combs' | 'pools') {
-    this.viewMode.set(view);
-  }
-
   showAddChamp(comboId: number, position: Position) {
     this.activeAdd.set({comboId, position});
-  }
-
-  fetchChampPools() {
-    const headers = { 'apikey': this.apiKey, 'Accept-Profile': 'public' };
-    const url = `https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/champion_comfort`;
-    this.http.get(url, { headers }).subscribe({
-      next: (data: any) => {
-        const items = (data || []).map((item: any) => ({
-          id: item.id,
-          role: item.role,
-          champion: item.champion,
-          comfort: item.comfort,
-          note: item.note || ''
-        })) as ChampionComfort[];
-        this.championPools.set(items);
-        const groups: Record<string, ChampionComfort[]> = { Top: [], Jngl: [], Mid: [], ADC: [], Supp: [] };
-        items.forEach(item => {
-          const rawRole = String(item.role || '').trim();
-          const normalized = rawRole.toLowerCase().replace(/\s+/g, '');
-          const key = this.poolRoles.find(r => r.toLowerCase() === normalized || (r === 'Jngl' && normalized === 'jgl')) || 'Top';
-          groups[key].push(item);
-        });
-        this.poolGroups.set(groups);
-      },
-      error: (error) => {
-        console.error('Fehler beim Laden der Champion Pools:', error);
-      }
-    });
   }
 
   updateField(teamComb: TeamComb, field: 'name' | 'strengths' | 'weaknesses' | 'objectives' | 'notes', value: string) {
