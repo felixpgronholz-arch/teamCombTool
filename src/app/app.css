@@ -1,10 +1,326 @@
-.combs{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 60px;
+:host {
+  display: block;
+  padding: 24px;
+  min-height: 100vh;
+  background: #f3f4f6;
+  color: #111827;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.comb{
-    display: flex;
+.page-title {
+  margin: 0 0 20px;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.toolbar-button {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  color: #111827;
+  font-weight: 600;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+.toolbar-button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.comb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.comb-card {
+  display: grid;
+  grid-template-columns: 150px minmax(320px, 2.4fr) repeat(4, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 18px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 16px 50px rgba(15, 23, 42, 0.08);
+}
+
+.comb-name-panel {
+  position: relative;
+  border-radius: 20px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  min-height: 220px;
+}
+
+.combo-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.combo-name-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+  background: #ffffff;
+}
+
+.champ-input-row {
+  display: flex;
+  justify-content: center;
+}
+
+.champ-input {
+  width: 100%;
+  max-width: 190px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+}
+
+.combo-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid #d1d5db;
+  resize: vertical;
+  background: #ffffff;
+  color: #111827;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.delete-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: #ef4444;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.combo-picks {
+  padding: 6px 0;
+}
+
+.combo-section-title {
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  color: #374151;
+  font-weight: 700;
+}
+
+.picks-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pick-column {
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 170px;
+}
+
+.pick-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+}
+
+.champ-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.champ-item {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+}
+
+.champ-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.champ-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-champ-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #111827;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: center;
+}
+
+.combo-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 20px;
+  padding: 18px;
+  min-height: 220px;
+}
+
+.strengths {
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
+}
+
+.weaknesses {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+}
+
+.objectives {
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+}
+
+.notes {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+}
+
+.combo-panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.combo-text {
+  flex: 1;
+  color: #334155;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.add-combo-box {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.add-combo-button {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-combo-input {
+  min-width: 260px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+}
+
+@media (max-width: 1200px) {
+  .comb-card {
+    grid-template-columns: 130px minmax(240px, 2fr) repeat(4, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .comb-card {
+    grid-template-columns: 1fr;
+  }
+
+  .picks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .toolbar {
+    justify-content: flex-start;
+  }
+
+  .picks-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-combo-box {
     flex-direction: column;
+    align-items: stretch;
+  }
 }

@@ -1,70 +1,118 @@
-<h1>TeamCombs</h1>
-<div style="position: relative;">
-  <div style="position: absolute; top: 0; right: 0; display: flex; gap: 10px;">
-    <button (click)="toggleSmallMode()">Small Mode</button>
-    <button (click)="toggleEditorMode()">Editor: {{ editorMode() ? 'On' : 'Off' }}</button>
-  </div>
+<h1 class="page-title">TeamCombs</h1>
+<div class="toolbar">
+  <button class="toolbar-button" (click)="toggleEditorMode()">Editor: {{ editorMode() ? 'On' : 'Off' }}</button>
 </div>
-<div style="display: flex;">
-  <div class="combs">
-    <div class="comb" *ngFor="let teamComb of items()">
-      <h3 style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 10px 0;">
-        <span>{{ teamComb.name }}</span>
-        <button *ngIf="editorMode()" (click)="deleteComb(teamComb)" style="background: red; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</button>
-      </h3>
-    <div style="display: flex; align-items: center; margin-bottom: 5px;">
-      <div style="display: flex;">
-        <div *ngFor="let champ of teamComb.Top; let i = index" style="position: relative; display: inline-block; margin-right: 5px;">
-          <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" [width]="smallMode() ? 70 : 100" [height]="smallMode() ? 70 : 100">
-          <button *ngIf="editorMode()" (click)="removeChamp(teamComb, 'Top', i)" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">X</button>
+
+<div class="comb-list">
+  <article class="comb-card" *ngFor="let teamComb of items()">
+    <div class="comb-name-panel">
+      <div *ngIf="!editorMode()" class="combo-name">{{ teamComb.name }}</div>
+      <input *ngIf="editorMode()" class="combo-name-input" type="text" [value]="teamComb.name" (blur)="updateField(teamComb, 'name', $any($event.target).value)">
+      <button *ngIf="editorMode()" class="delete-button" (click)="deleteComb(teamComb)">×</button>
+    </div>
+
+    <section class="combo-picks">
+      <div class="combo-section-title">Picks</div>
+      <div class="picks-grid">
+        <div class="pick-column">
+          <div class="pick-heading">Top</div>
+          <div class="champ-list">
+            <div class="champ-item" *ngFor="let champ of teamComb.Top; let i = index">
+              <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ">
+              <button *ngIf="editorMode()" class="champ-delete" (click)="removeChamp(teamComb, 'Top', i)">×</button>
+            </div>
+          </div>
+          <button *ngIf="editorMode()" class="add-champ-btn" (click)="showAddChamp(teamComb.id, 'Top')">+</button>
+          <div *ngIf="editorMode() && activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Top'" class="champ-input-row">
+            <input #topInput class="champ-input" placeholder="Champion ID" (keyup.enter)="addChamp(teamComb, 'Top', topInput.value); topInput.value = ''">
+          </div>
+        </div>
+
+        <div class="pick-column">
+          <div class="pick-heading">Jgl</div>
+          <div class="champ-list">
+            <div class="champ-item" *ngFor="let champ of teamComb.Jgl; let i = index">
+              <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ">
+              <button *ngIf="editorMode()" class="champ-delete" (click)="removeChamp(teamComb, 'Jgl', i)">×</button>
+            </div>
+          </div>
+          <button *ngIf="editorMode()" class="add-champ-btn" (click)="showAddChamp(teamComb.id, 'Jgl')">+</button>
+          <div *ngIf="editorMode() && activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Jgl'" class="champ-input-row">
+            <input #jglInput class="champ-input" placeholder="Champion ID" (keyup.enter)="addChamp(teamComb, 'Jgl', jglInput.value); jglInput.value = ''">
+          </div>
+        </div>
+
+        <div class="pick-column">
+          <div class="pick-heading">Mid</div>
+          <div class="champ-list">
+            <div class="champ-item" *ngFor="let champ of teamComb.Mid; let i = index">
+              <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ">
+              <button *ngIf="editorMode()" class="champ-delete" (click)="removeChamp(teamComb, 'Mid', i)">×</button>
+            </div>
+          </div>
+          <button *ngIf="editorMode()" class="add-champ-btn" (click)="showAddChamp(teamComb.id, 'Mid')">+</button>
+          <div *ngIf="editorMode() && activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Mid'" class="champ-input-row">
+            <input #midInput class="champ-input" placeholder="Champion ID" (keyup.enter)="addChamp(teamComb, 'Mid', midInput.value); midInput.value = ''">
+          </div>
+        </div>
+
+        <div class="pick-column">
+          <div class="pick-heading">ADC</div>
+          <div class="champ-list">
+            <div class="champ-item" *ngFor="let champ of teamComb.Bot; let i = index">
+              <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ">
+              <button *ngIf="editorMode()" class="champ-delete" (click)="removeChamp(teamComb, 'Bot', i)">×</button>
+            </div>
+          </div>
+          <button *ngIf="editorMode()" class="add-champ-btn" (click)="showAddChamp(teamComb.id, 'Bot')">+</button>
+          <div *ngIf="editorMode() && activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Bot'" class="champ-input-row">
+            <input #botInput class="champ-input" placeholder="Champion ID" (keyup.enter)="addChamp(teamComb, 'Bot', botInput.value); botInput.value = ''">
+          </div>
+        </div>
+
+        <div class="pick-column">
+          <div class="pick-heading">Supp</div>
+          <div class="champ-list">
+            <div class="champ-item" *ngFor="let champ of teamComb.Supp; let i = index">
+              <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ">
+              <button *ngIf="editorMode()" class="champ-delete" (click)="removeChamp(teamComb, 'Supp', i)">×</button>
+            </div>
+          </div>
+          <button *ngIf="editorMode()" class="add-champ-btn" (click)="showAddChamp(teamComb.id, 'Supp')">+</button>
+          <div *ngIf="editorMode() && activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Supp'" class="champ-input-row">
+            <input #suppInput class="champ-input" placeholder="Champion ID" (keyup.enter)="addChamp(teamComb, 'Supp', suppInput.value); suppInput.value = ''">
+          </div>
         </div>
       </div>
-      <button *ngIf="editorMode()" (click)="showAddChamp(teamComb.id, 'Top')" style="margin-left: 10px;">+</button>
-      <input *ngIf="activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Top'" type="text" placeholder="Champion hinzufügen" (keyup.enter)="addChamp(teamComb, 'Top', $event.target.value)" style="margin-left: 10px;">
-    </div>
-    <div style="display: flex; align-items: center; margin-bottom: 5px;">
-      <div style="display: flex;">
-        <div *ngFor="let champ of teamComb.Jgl; let i = index" style="position: relative; display: inline-block; margin-right: 5px;">
-          <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" [width]="smallMode() ? 70 : 100" [height]="smallMode() ? 70 : 100">
-          <button *ngIf="editorMode()" (click)="removeChamp(teamComb, 'Jgl', i)" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">X</button>
-        </div>
-      </div>
-      <button *ngIf="editorMode()" (click)="showAddChamp(teamComb.id, 'Jgl')" style="margin-left: 10px;">+</button>
-      <input *ngIf="activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Jgl'" type="text" placeholder="Champion hinzufügen" (keyup.enter)="addChamp(teamComb, 'Jgl', $event.target.value)" style="margin-left: 10px;">
-    </div>
-    <div style="display: flex; align-items: center; margin-bottom: 5px;">
-      <div style="display: flex;">
-        <div *ngFor="let champ of teamComb.Mid; let i = index" style="position: relative; display: inline-block; margin-right: 5px;">
-          <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" [width]="smallMode() ? 70 : 100" [height]="smallMode() ? 70 : 100">
-          <button *ngIf="editorMode()" (click)="removeChamp(teamComb, 'Mid', i)" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">X</button>
-        </div>
-      </div>
-      <button *ngIf="editorMode()" (click)="showAddChamp(teamComb.id, 'Mid')" style="margin-left: 10px;">+</button>
-      <input *ngIf="activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Mid'" type="text" placeholder="Champion hinzufügen" (keyup.enter)="addChamp(teamComb, 'Mid', $event.target.value)" style="margin-left: 10px;">
-    </div>
-    <div style="display: flex; align-items: center; margin-bottom: 5px;">
-      <div style="display: flex;">
-        <div *ngFor="let champ of teamComb.Bot; let i = index" style="position: relative; display: inline-block; margin-right: 5px;">
-          <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" [width]="smallMode() ? 70 : 100" [height]="smallMode() ? 70 : 100">
-          <button *ngIf="editorMode()" (click)="removeChamp(teamComb, 'Bot', i)" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">X</button>
-        </div>
-      </div>
-      <button *ngIf="editorMode()" (click)="showAddChamp(teamComb.id, 'Bot')" style="margin-left: 10px;">+</button>
-      <input *ngIf="activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Bot'" type="text" placeholder="Champion hinzufügen" (keyup.enter)="addChamp(teamComb, 'Bot', $event.target.value)" style="margin-left: 10px;">
-    </div>
-    <div style="display: flex; align-items: center;">
-      <div style="display: flex;">
-        <div *ngFor="let champ of teamComb.Supp; let i = index" style="position: relative; display: inline-block; margin-right: 5px;">
-          <img [src]="'https://ddragon.leagueoflegends.com/cdn/16.7.1/img/champion/' + champ + '.png'" [alt]="champ" [width]="smallMode() ? 70 : 100" [height]="smallMode() ? 70 : 100">
-          <button *ngIf="editorMode()" (click)="removeChamp(teamComb, 'Supp', i)" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">X</button>
-        </div>
-      </div>
-      <button *ngIf="editorMode()" (click)="showAddChamp(teamComb.id, 'Supp')" style="margin-left: 10px;">+</button>
-      <input *ngIf="activeAdd()?.comboId === teamComb.id && activeAdd()?.position === 'Supp'" type="text" placeholder="Champion hinzufügen" (keyup.enter)="addChamp(teamComb, 'Supp', $event.target.value)" style="margin-left: 10px;">
-    </div>
-  </div>
-  <div style="width: 200px; padding: 20px;">
-    <button *ngIf="editorMode()" (click)="showAddComb.set(true)" style="background: blue; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">+</button>
-    <input *ngIf="editorMode() && showAddComb()" type="text" placeholder="Neue Combo Name" (keyup.enter)="addNewComb($event.target.value)" style="margin-top: 10px; width: 100%;">
-  </div>
+    </section>
+
+    <section class="combo-panel strengths">
+      <div class="combo-panel-title">Stärken</div>
+      <textarea *ngIf="editorMode()" class="combo-textarea" [value]="teamComb.strengths || ''" (blur)="updateField(teamComb, 'strengths', $any($event.target).value)"></textarea>
+      <div *ngIf="!editorMode()" class="combo-text">{{ teamComb.strengths || '' }}</div>
+    </section>
+
+    <section class="combo-panel weaknesses">
+      <div class="combo-panel-title">Schwächen</div>
+      <textarea *ngIf="editorMode()" class="combo-textarea" [value]="teamComb.weaknesses || ''" (blur)="updateField(teamComb, 'weaknesses', $any($event.target).value)"></textarea>
+      <div *ngIf="!editorMode()" class="combo-text">{{ teamComb.weaknesses || '' }}</div>
+    </section>
+
+    <section class="combo-panel objectives">
+      <div class="combo-panel-title">Ziele</div>
+      <textarea *ngIf="editorMode()" class="combo-textarea" [value]="teamComb.objectives || ''" (blur)="updateField(teamComb, 'objectives', $any($event.target).value)"></textarea>
+      <div *ngIf="!editorMode()" class="combo-text">{{ teamComb.objectives || '' }}</div>
+    </section>
+
+    <section class="combo-panel notes">
+      <div class="combo-panel-title">Notes</div>
+      <textarea *ngIf="editorMode()" class="combo-textarea" [value]="teamComb.notes || ''" (blur)="updateField(teamComb, 'notes', $any($event.target).value)"></textarea>
+      <div *ngIf="!editorMode()" class="combo-text">{{ teamComb.notes || '' }}</div>
+    </section>
+  </article>
+</div>
+
+<div *ngIf="editorMode()" class="add-combo-box">
+  <button class="add-combo-button" (click)="showAddComb.set(true)">+</button>
+  <input *ngIf="showAddComb()" class="add-combo-input" type="text" placeholder="Neue Combo Name" (keyup.enter)="addNewComb($event.target.value)">
 </div>

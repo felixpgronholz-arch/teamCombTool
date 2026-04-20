@@ -1,5 +1,4 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
@@ -11,13 +10,17 @@ interface TeamComb {
   Mid: string[];
   Bot: string[];
   Supp: string[];
+  strengths?: string;
+  weaknesses?: string;
+  objectives?: string;
+  notes?: string;
 }
 
 type Position = 'Top' | 'Jgl' | 'Mid' | 'Bot' | 'Supp';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -26,17 +29,12 @@ export class App implements OnInit {
   private apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzd3J2bmJ1bm5idWlzeHRtcHRzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjAxMTk2OCwiZXhwIjoyMDkxNTg3OTY4fQ.vbJg-_ZGjW_1OIbHVtRmcsIeShPYJv26XxRM73YZboA'; // Ersetze mit deinem echten API-Key
 
   public items = signal<TeamComb[]>([]);
-  public smallMode = signal(false);
   public editorMode = signal(false);
   public activeAdd = signal<{comboId: number, position: Position} | null>(null);
   public showAddComb = signal(false);
 
   ngOnInit() {
     this.fetchData();
-  }
-
-  toggleSmallMode() {
-    this.smallMode.set(!this.smallMode());
   }
 
   toggleEditorMode() {
@@ -52,6 +50,11 @@ export class App implements OnInit {
 
   showAddChamp(comboId: number, position: Position) {
     this.activeAdd.set({comboId, position});
+  }
+
+  updateField(teamComb: TeamComb, field: 'name' | 'strengths' | 'weaknesses' | 'objectives' | 'notes', value: string) {
+    const updatedComb = { ...teamComb, [field]: value } as TeamComb;
+    this.patchComb(teamComb.id, updatedComb);
   }
 
   addChamp(teamComb: TeamComb, position: Position, champ: string) {
@@ -90,7 +93,11 @@ export class App implements OnInit {
       Jgl: [],
       Mid: [],
       Bot: [],
-      Supp: []
+      Supp: [],
+      'Stärken': '',
+      'Schwächen': '',
+      Ziele: '',
+      Notes: ''
     };
     const headers = { 'apikey': this.apiKey, 'Accept-Profile': 'public', 'Content-Type': 'application/json' };
     const url = `https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs`;
@@ -109,9 +116,16 @@ export class App implements OnInit {
   patchComb(id: number, updatedComb: TeamComb) {
     const headers = { 'apikey': this.apiKey, 'Accept-Profile': 'public', 'Content-Type': 'application/json' };
     const url = `https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs?id=eq.${id}`;
-    // Entferne id und andere nicht zu patchende Felder
-    const { id: _, ...body } = updatedComb;
-    this.http.patch(url, body, { headers }).subscribe({
+    // Entferne id und englische Alias-Felder vor dem Patch
+    const { id: _, strengths, weaknesses, objectives, notes, ...rest } = updatedComb as any;
+    const patchBody = {
+      ...rest,
+      'Stärken': strengths,
+      'Schwächen': weaknesses,
+      Ziele: objectives,
+      Notes: notes
+    };
+    this.http.patch(url, patchBody, { headers }).subscribe({
       next: () => {
         // Aktualisiere die lokale Liste
         const current = this.items();
@@ -133,14 +147,18 @@ export class App implements OnInit {
     this.http.get('https://wswrvnbunnbuisxtmpts.supabase.co/rest/v1/teamCombs', { headers }).subscribe({
       next: (data: any) => {
         console.log('Daten erhalten:', data);
-        // Konvertiere die Objekte (c1, c2, etc.) zu Arrays
+        // Konvertiere die Objekte (c1, c2, etc.) zu Arrays und Textfelder aus der DB
         const convertedData = data.map((item: any) => ({
           ...item,
           Top: Object.values(item.Top || {}).filter(v => v),
           Jgl: Object.values(item.Jgl || {}).filter(v => v),
           Mid: Object.values(item.Mid || {}).filter(v => v),
           Bot: Object.values(item.Bot || {}).filter(v => v),
-          Supp: Object.values(item.Supp || {}).filter(v => v)
+          Supp: Object.values(item.Supp || {}).filter(v => v),
+          strengths: item.strengths || item['Stärken'] || '',
+          weaknesses: item.weaknesses || item['Schwächen'] || '',
+          objectives: item.objectives || item.Ziele || '',
+          notes: item.notes || item.Notes || ''
         })).sort((a: any, b: any) => a.id - b.id);
         setTimeout(() => this.items.set(convertedData as TeamComb[]), 0); // Verzögerte Zuweisung, um Change Detection-Fehler zu vermeiden
       },
